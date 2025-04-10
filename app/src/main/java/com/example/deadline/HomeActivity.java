@@ -28,8 +28,8 @@ public class HomeActivity extends AppCompatActivity {
     private TextView tvChiTieu, tvThuNhap, tvSoDu;
     private RecyclerView rvGiaoDich;
     private Spinner spinnerMonths;
-
     private GiaoDichAdapter adapter;
+
     private final List<GiaoDich> giaoDichList = new ArrayList<>();
     private final List<String> monthList = new ArrayList<>();
     private ArrayAdapter<String> monthAdapter;
@@ -49,10 +49,25 @@ public class HomeActivity extends AppCompatActivity {
         spinnerMonths = findViewById(R.id.spinnerMonths);
         rvGiaoDich = findViewById(R.id.rvGiaoDich);
         rvGiaoDich.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new GiaoDichAdapter(giaoDichList);
+
+        // Adapter cho RecyclerView kèm listener xử lý edit/delete
+        adapter = new GiaoDichAdapter(giaoDichList, new GiaoDichAdapter.OnItemActionListener() {
+            @Override
+            public void onEdit(int position) {
+                Toast.makeText(HomeActivity.this, "Chức năng sửa chưa triển khai", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onDelete(int position) {
+                giaoDichList.remove(position);
+                adapter.notifyItemRemoved(position);
+                Toast.makeText(HomeActivity.this, "Đã xoá giao dịch", Toast.LENGTH_SHORT).show();
+                // Cập nhật lại Firebase nếu cần
+            }
+        });
         rvGiaoDich.setAdapter(adapter);
 
-        // Tạo adapter tháng
+        // Adapter cho spinner tháng
         monthAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, monthList);
         monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMonths.setAdapter(monthAdapter);
@@ -65,14 +80,13 @@ public class HomeActivity extends AppCompatActivity {
             return;
         }
 
-        // Dẫn tới đúng UID người dùng
+        // Lấy UID từ Firebase
         String userId = currentUser.getUid();
         databaseRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
 
         loadTongQuan();
         loadThangGiaoDich();
 
-        // Gắn sự kiện chọn tháng
         spinnerMonths.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -83,6 +97,29 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
+        });
+
+        // Navigation
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.setSelectedItemId(R.id.nav_home);
+        bottomNav.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_home) {
+                return true;
+            } else if (id == R.id.nav_calendar) {
+                startActivity(new Intent(HomeActivity.this, CalendarActivity.class));
+                return true;
+            } else if (id == R.id.nav_add) {
+                startActivity(new Intent(HomeActivity.this, AddTransactionActivity.class));
+                return true;
+            } else if (id == R.id.nav_statistics) {
+                startActivity(new Intent(HomeActivity.this, StaticsticsActivity.class));
+                return true;
+            } else if (id == R.id.nav_profile) {
+                startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
+                return true;
+            }
+            return false;
         });
     }
 
@@ -126,10 +163,9 @@ public class HomeActivity extends AppCompatActivity {
                 monthList.clear();
                 monthList.addAll(monthSet);
 
-                // Sắp xếp giảm dần theo thời gian
                 Collections.sort(monthList, (a, b) -> {
                     try {
-                        SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy");
+                        SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy", Locale.getDefault());
                         return sdf.parse(b).compareTo(sdf.parse(a));
                     } catch (ParseException e) {
                         return 0;
@@ -175,27 +211,5 @@ public class HomeActivity extends AppCompatActivity {
                 Toast.makeText(HomeActivity.this, "Lỗi khi tải giao dịch: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-        bottomNav.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-            if (id == R.id.nav_home) {
-                // Trang chủ
-                return true;
-            } else if (id == R.id.nav_calendar) {
-                startActivity(new Intent(HomeActivity.this, CalendarActivity.class));
-                return true;
-            } else if (id == R.id.nav_add) {
-                startActivity(new Intent(HomeActivity.this, AddTransactionActivity.class));
-                return true;
-            } else if (id == R.id.nav_statistics) {
-                startActivity(new Intent(HomeActivity.this, StaticsticsActivity.class));
-                return true;
-            } else if (id == R.id.nav_profile) {
-                startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
-                return true;
-            }
-            return false;
-        });
-
     }
 }
