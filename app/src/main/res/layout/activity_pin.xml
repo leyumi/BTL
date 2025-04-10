@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F4A7C3">
+
+    <!-- Khung nền trắng bo góc -->
+    <LinearLayout
+        android:id="@+id/card_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="100dp"
+        android:background="@drawable/base"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="24dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Tiêu đề -->
+
+        <!-- Nhãn nhập PIN -->
+
+        <!-- Nhập mã PIN 6 số -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="Enter Security Pin"
+            android:textColor="#000000"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <!-- 6 ô EditText -->
+            <EditText
+                android:id="@+id/et_pin1"
+                style="@style/PinStyle" />
+
+            <EditText
+                android:id="@+id/et_pin2"
+                style="@style/PinStyle" />
+
+            <EditText
+                android:id="@+id/et_pin3"
+                style="@style/PinStyle" />
+
+            <EditText
+                android:id="@+id/et_pin4"
+                style="@style/PinStyle" />
+
+            <EditText
+                android:id="@+id/et_pin5"
+                style="@style/PinStyle" />
+
+            <EditText
+                android:id="@+id/et_pin6"
+                style="@style/PinStyle" />
+        </LinearLayout>
+
+        <!-- Nút Accept -->
+        <Button
+            android:id="@+id/btn_accept"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="#00C896"
+            android:text="Accept"
+            android:textColor="@android:color/white" />
+
+        <!-- Nút Send Again -->
+        <Button
+            android:id="@+id/btn_resend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#CCF1E6"
+            android:text="Send Again"
+            android:textColor="#00C896" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Security Pin"
+        android:textColor="@android:color/black"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="153dp"
+        tools:layout_editor_absoluteY="31dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,6 +3,9 @@
 
     <color name="pinkBackground">#F1ABD0</color>
     <color name="textColor">#030A8A</color> <!-- Màu chữ MoneyMate -->
+    <color name="white">#FFFFFF</color>
+    <color name="nav_selected">#6200EE</color> <!-- màu khi được chọn -->
+    <color name="nav_unselected">#9E9E9E</color>
 
 
 </resources>
