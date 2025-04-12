@@ -1,6 +1,7 @@
 package com.example.deadline;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -40,9 +41,11 @@ public class AllTransactionsActivity extends AppCompatActivity {
     private GiaoDichAdapter adapter;
     private final List<GiaoDich> allGiaoDichList = new ArrayList<>();
     private final List<GiaoDich> filteredGiaoDichList = new ArrayList<>();
-
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
     private Date fromDate, toDate;
+
+    private DatabaseReference databaseRef;
+    private ValueEventListener giaoDichListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,40 +63,46 @@ public class AllTransactionsActivity extends AppCompatActivity {
 
         // Thiết lập RecyclerView
         rvAllTransactions.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new GiaoDichAdapter(filteredGiaoDichList, new GiaoDichAdapter.OnItemActionListener() {
+        adapter = new GiaoDichAdapter(this, filteredGiaoDichList, new GiaoDichAdapter.OnItemActionListener() {
             @Override
-            public void onEdit(int position) {
-                // Xử lý sửa
+            public void onEdit(GiaoDich giaoDich) {
+                Intent intent = new Intent(AllTransactionsActivity.this, EditTransactionActivity.class);
+                intent.putExtra("GiaoDichID", giaoDich.getId());
+                startActivity(intent);
             }
 
             @Override
-            public void onDelete(int position) {
-                // Xử lý xóa
+            public void onDelete(GiaoDich giaoDich) {
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (currentUser != null) {
+                    databaseRef.child(giaoDich.getId()).removeValue()
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(AllTransactionsActivity.this, "Giao dịch đã được xóa", Toast.LENGTH_SHORT).show();
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(AllTransactionsActivity.this, "Xóa giao dịch thất bại", Toast.LENGTH_SHORT).show();
+                            });
+                }
             }
         });
         rvAllTransactions.setAdapter(adapter);
 
-        // Khởi tạo ngày mặc định (tháng hiện tại)
+        // Khởi tạo ngày mặc định
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         fromDate = calendar.getTime();
         tvFromDate.setText(dateFormat.format(fromDate));
-
         calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
         toDate = calendar.getTime();
         tvToDate.setText(dateFormat.format(toDate));
 
-        // Sự kiện chọn ngày bắt đầu
+        // Sự kiện chọn ngày
         btnPickFromDate.setOnClickListener(v -> showDatePicker(true));
-
-        // Sự kiện chọn ngày kết thúc
         btnPickToDate.setOnClickListener(v -> showDatePicker(false));
-
-        // Sự kiện áp dụng bộ lọc
         btnApplyFilter.setOnClickListener(v -> applyFilters());
 
-        // Tải tất cả giao dịch
-        loadAllGiaoDich();
+        // Tải dữ liệu realtime
+        loadAllGiaoDichRealtime();
     }
 
     private void showDatePicker(boolean isFromDate) {
@@ -109,7 +118,6 @@ public class AllTransactionsActivity extends AppCompatActivity {
                 (view, year, month, dayOfMonth) -> {
                     Calendar selectedDate = Calendar.getInstance();
                     selectedDate.set(year, month, dayOfMonth);
-
                     if (isFromDate) {
                         fromDate = selectedDate.getTime();
                         tvFromDate.setText(dateFormat.format(fromDate));
@@ -117,27 +125,27 @@ public class AllTransactionsActivity extends AppCompatActivity {
                         toDate = selectedDate.getTime();
                         tvToDate.setText(dateFormat.format(toDate));
                     }
+                    applyFilters(); // Cập nhật lọc khi đổi ngày
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)
         );
-
         datePickerDialog.show();
     }
 
-    private void loadAllGiaoDich() {
+    private void loadAllGiaoDichRealtime() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
             finish();
             return;
         }
 
-        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("users")
+        databaseRef = FirebaseDatabase.getInstance().getReference("users")
                 .child(currentUser.getUid())
                 .child("transactions");
 
-        databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        giaoDichListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 allGiaoDichList.clear();
@@ -147,14 +155,16 @@ public class AllTransactionsActivity extends AppCompatActivity {
                         allGiaoDichList.add(gd);
                     }
                 }
-                applyFilters(); // Áp dụng bộ lọc sau khi tải xong
+                applyFilters(); // Áp dụng bộ lọc sau khi dữ liệu được tải về
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(AllTransactionsActivity.this, "Lỗi khi tải giao dịch: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
-        });
+        };
+
+        databaseRef.addValueEventListener(giaoDichListener);
     }
 
     private void applyFilters() {
@@ -168,13 +178,9 @@ public class AllTransactionsActivity extends AppCompatActivity {
                 Date gdDate = dateFormat.parse(gd.getDate());
                 if (gdDate == null) continue;
 
-                // Kiểm tra ngày
-                boolean dateInRange = (fromDate == null || gdDate.after(fromDate) ||
-                        gdDate.equals(fromDate)) &&
-                        (toDate == null || gdDate.before(toDate) ||
-                                gdDate.equals(toDate));
+                boolean dateInRange = (fromDate == null || !gdDate.before(fromDate)) &&
+                        (toDate == null || !gdDate.after(toDate));
 
-                // Kiểm tra loại giao dịch
                 boolean typeMatches = !filterByType ||
                         (selectedType.equals("Thu nhập") && gd.getAmount() >= 0) ||
                         (selectedType.equals("Chi tiêu") && gd.getAmount() < 0);
@@ -191,6 +197,14 @@ public class AllTransactionsActivity extends AppCompatActivity {
 
         if (filteredGiaoDichList.isEmpty()) {
             Toast.makeText(this, "Không có giao dịch nào phù hợp", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (databaseRef != null && giaoDichListener != null) {
+            databaseRef.removeEventListener(giaoDichListener);
         }
     }
 }

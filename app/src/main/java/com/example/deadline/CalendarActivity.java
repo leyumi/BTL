@@ -134,15 +134,18 @@ public class CalendarActivity extends AppCompatActivity {
                 long tongThuNhap = 0;
 
                 for (DataSnapshot ds : snapshot.getChildren()) {
-                    String type = ds.child("type").getValue(String.class);
-                    Long amount = ds.child("amount").getValue(Long.class);
+                    GiaoDich giaoDich = ds.getValue(GiaoDich.class);
 
-                    if (type != null && amount != null) {
-                        if (type.equals("expense")) {
-                            tongChiTieu += amount;
-                        } else if (type.equals("income")) {
-                            tongThuNhap += amount;
+                    if (giaoDich != null) {
+                        giaoDich.setId(ds.getKey()); // ✅ Gán ID từ Firebase vào đối tượng
+
+                        if ("expense".equals(giaoDich.getType())) {
+                            tongChiTieu += giaoDich.getAmount();
+                        } else if ("income".equals(giaoDich.getType())) {
+                            tongThuNhap += giaoDich.getAmount();
                         }
+
+                        // TODO: Nếu bạn muốn hiển thị danh sách giao dịch từng ngày, hãy thêm vào một list ở đây
                     }
                 }
 
@@ -162,4 +165,5 @@ public class CalendarActivity extends AppCompatActivity {
             }
         });
     }
+
 }

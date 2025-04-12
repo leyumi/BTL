@@ -1,5 +1,4 @@
 package com.example.deadline;
-
 public class ThongKeModel {
     private String category;
     private int amount;
@@ -9,7 +8,11 @@ public class ThongKeModel {
         this.amount = amount;
     }
 
-    public String getCategory() { return category; }
-    public int getAmount() { return amount; }
-}
+    public String getCategory() {
+        return category;
+    }
 
+    public int getAmount() {
+        return amount;
+    }
+}

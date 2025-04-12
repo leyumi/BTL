@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:background="#E5FCE5"
+                android:background="#C8E6C9"
                 android:elevation="4dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
@@ -67,7 +67,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="0 VND"
-                        android:textColor="#000" />
+                        android:textColor="#000"
+                        android:ellipsize="end"
+                        android:maxLines="1"/>
 
                     <TextView
                         android:layout_width="match_parent"

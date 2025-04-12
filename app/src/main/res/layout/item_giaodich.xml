@@ -1,60 +1,92 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    app:cardElevation="2dp"
-    app:cardCornerRadius="8dp">
+    android:background="@drawable/bg_item_transaction"
+    android:padding="10dp"
+    android:layout_marginBottom="10dp">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <!-- ICON BÊN TRÁI -->
+    <ImageView
+        android:id="@+id/imgIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="8dp"
+        android:padding="6dp"
+        android:scaleType="centerInside"
+        android:contentDescription="Icon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- TÊN GIAO DỊCH + NGÀY -->
+    <LinearLayout
+        android:id="@+id/layoutText"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:orientation="vertical"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@id/imgIcon"
+        app:layout_constraintEnd_toStartOf="@id/tvAmount"
+        app:layout_constraintTop_toTopOf="@id/imgIcon"
+        app:layout_constraintBottom_toBottomOf="@id/imgIcon">
 
         <TextView
             android:id="@+id/tvTitle"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textStyle="bold"/>
+            android:text="Lương"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tvAmount" />
+
 
         <TextView
             android:id="@+id/tvDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tvTitle"
-            android:layout_marginTop="4dp"
+            android:text="18 Thg 03, 2025"
             android:textSize="12sp"
-            android:textColor="#757575"/>
+            android:textColor="#888888" />
 
+        <!-- CATEGORY -->
         <TextView
             android:id="@+id/tvCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tvTitle"
-            android:layout_marginTop="4dp"
-            android:layout_toRightOf="@id/tvDate"
-            android:layout_marginLeft="8dp"
+            android:text="Thu nhập"
             android:textSize="12sp"
-            android:textColor="#757575"/>
+            android:textColor="#888888"
+            android:layout_marginTop="4dp" />
+    </LinearLayout>
 
-        <TextView
-            android:id="@+id/tvAmount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:textSize="16sp"
-            android:textStyle="bold"/>
+    <!-- SỐ TIỀN (DỊCH TRÁNH XA ICON CATEGORY) -->
+    <TextView
+        android:id="@+id/tvAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="4.000.000đ"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="#8A5EFF"
+        android:layout_marginEnd="12dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/imgMenu" />
 
-        <ImageView
-            android:id="@+id/imgMenu"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/tvAmount"
-            android:src="@drawable/ic_category"
-            android:contentDescription="Menu"/>
-    </RelativeLayout>
-</androidx.cardview.widget.CardView>
+    <!-- ICON CATEGORY BÊN PHẢI CĂN GIỮA DỌC -->
+    <ImageView
+        android:id="@+id/imgMenu"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_category"
+        android:contentDescription="Menu"
+        android:layout_marginEnd="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

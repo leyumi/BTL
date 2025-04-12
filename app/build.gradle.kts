@@ -47,6 +47,9 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation ("com.google.firebase:firebase-database:20.3.0")
     implementation ("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-database")
     implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
-
+    implementation("androidx.cardview:cardview:1.0.0")
+    implementation("com.github.bumptech.glide:glide:4.15.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.15.0")
 }

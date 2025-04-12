@@ -1,5 +1,7 @@
 package com.example.deadline;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,8 +21,10 @@ public class GiaoDichAdapter extends RecyclerView.Adapter<GiaoDichAdapter.ViewHo
 
     private final List<GiaoDich> giaoDichList;
     private final OnItemActionListener listener;
+    private final Context context;  // Thêm context
 
-    public GiaoDichAdapter(List<GiaoDich> giaoDichList, OnItemActionListener listener) {
+    public GiaoDichAdapter(Context context, List<GiaoDich> giaoDichList, OnItemActionListener listener) {
+        this.context = context;
         this.giaoDichList = giaoDichList;
         this.listener = listener;
     }
@@ -37,39 +41,52 @@ public class GiaoDichAdapter extends RecyclerView.Adapter<GiaoDichAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         GiaoDich giaoDich = giaoDichList.get(position);
 
-        // Sử dụng title nếu có, nếu không thì dùng name
-        String displayTitle = giaoDich.getTitle() != null && !giaoDich.getTitle().isEmpty()
-                ? giaoDich.getTitle()
-                : giaoDich.getName();
-
-        holder.tvTitle.setText(displayTitle != null ? displayTitle : "Không có tiêu đề");
-        holder.tvDate.setText(giaoDich.getDate() != null ? giaoDich.getDate() : "--/--/----");
+        // Tiêu đề giao dịch
+        String displayName = giaoDich.getName() != null && !giaoDich.getName().isEmpty()
+                ? giaoDich.getName()
+                : "Không có tên";
+        holder.tvTitle.setText(displayName);
 
         // Định dạng số tiền
-        int amount = giaoDich.getAmount();
-        String amountFormatted = NumberFormat.getNumberInstance(Locale.US).format(Math.abs(amount)) + " VND";
-        holder.tvAmount.setText((amount < 0 ? "- " : "+ ") + amountFormatted);
-        holder.tvAmount.setTextColor(amount < 0 ? Color.RED : Color.parseColor("#43A047"));
+        String amountFormatted = NumberFormat.getNumberInstance(Locale.US)
+                .format(Math.abs(giaoDich.getAmount())) + " VND";
+        boolean isExpense = "expense".equals(giaoDich.getType());
+        holder.tvAmount.setText((isExpense ? "- " : "+ ") + amountFormatted);
+        holder.tvAmount.setTextColor(isExpense ? Color.parseColor("#6FA3EF") : Color.parseColor("#43A047"));
 
-        // Hiển thị category nếu có
-        if (holder.tvCategory != null) {
-            holder.tvCategory.setText(giaoDich.getCategory() != null ? giaoDich.getCategory() : "");
+        // Hiển thị ngày
+        holder.tvDate.setText(giaoDich.getDate());
+
+        // Hiển thị phân loại (thu nhập / chi tiêu)
+        String typeText = "income".equals(giaoDich.getType()) ? "Thu nhập" : "Chi tiêu";
+        holder.tvCategory.setText(typeText);
+
+        // Hiển thị icon nếu có
+        String iconResourceName = giaoDich.getIcon();
+        int iconResId = holder.itemView.getContext().getResources().getIdentifier(
+                iconResourceName, "drawable", holder.itemView.getContext().getPackageName());
+
+        if (iconResId != 0) {
+            holder.imgIcon.setImageResource(iconResId);
         }
 
-        // Xử lý menu
+        // Menu chỉnh sửa/xoá
         holder.imgMenu.setOnClickListener(v -> showPopupMenu(v, holder.getAdapterPosition()));
     }
 
     private void showPopupMenu(View view, int position) {
         PopupMenu popup = new PopupMenu(view.getContext(), view);
         popup.getMenuInflater().inflate(R.menu.menu_giaodich, popup.getMenu());
+
+        GiaoDich giaoDich = giaoDichList.get(position); // ✅ Lấy object theo vị trí
+
         popup.setOnMenuItemClickListener(item -> {
             int id = item.getItemId();
             if (id == R.id.action_edit) {
-                listener.onEdit(position);
+                listener.onEdit(giaoDich);  // ✅ Truyền object
                 return true;
             } else if (id == R.id.action_delete) {
-                listener.onDelete(position);
+                listener.onDelete(giaoDich);  // ✅ Truyền object
                 return true;
             }
             return false;
@@ -84,26 +101,22 @@ public class GiaoDichAdapter extends RecyclerView.Adapter<GiaoDichAdapter.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle, tvDate, tvAmount, tvCategory;
-        ImageView imgMenu;
+        ImageView imgMenu, imgIcon;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvDate = itemView.findViewById(R.id.tvDate);
             tvAmount = itemView.findViewById(R.id.tvAmount);
+            tvCategory = itemView.findViewById(R.id.tvCategory);
             imgMenu = itemView.findViewById(R.id.imgMenu);
-
-            // Thêm tvCategory nếu có trong layout
-            try {
-                tvCategory = itemView.findViewById(R.id.tvCategory);
-            } catch (Exception e) {
-                // Nếu không có tvCategory trong layout
-            }
+            imgIcon = itemView.findViewById(R.id.imgIcon);
         }
     }
 
+    // Interface listener
     public interface OnItemActionListener {
-        void onEdit(int position);
-        void onDelete(int position);
+        void onEdit(GiaoDich giaoDich);  // Truyền object GiaoDich
+        void onDelete(GiaoDich giaoDich);  // Truyền object GiaoDich
     }
 }

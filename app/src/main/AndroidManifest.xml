@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Deadline">
         <activity
+            android:name=".EditTransactionActivity"
+            android:exported="false" />
+        <activity
             android:name=".AllTransactionsActivity"
             android:exported="false" />
         <activity
@@ -37,9 +40,6 @@
             android:name=".CalendarActivity"
             android:exported="false" />
         <activity
-            android:name=".PinActivity"
-            android:exported="false" />
-        <activity
             android:name=".ResetPassActivity"
             android:exported="false" />
         <activity
@@ -50,7 +50,7 @@
             android:exported="false" />
         <activity
             android:name=".HomeActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".RegisterActivity"
             android:exported="false" />

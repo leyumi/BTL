@@ -119,7 +119,8 @@ public class StaticsticsActivity extends AppCompatActivity {
                                 amount = Math.abs(amount);
                             }
 
-                            String category = transaction.get("category").toString();
+                            // Dùng "type" như là danh mục phân loại thống kê
+                            String category = transaction.get("type").toString();
                             total += amount;
 
                             if (categoryMap.containsKey(category)) {
@@ -134,7 +135,8 @@ public class StaticsticsActivity extends AppCompatActivity {
                 }
 
                 for (Map.Entry<String, Integer> entry : categoryMap.entrySet()) {
-                    data.add(new ThongKeModel(entry.getKey(), entry.getValue()));
+                    String displayName = getDisplayTypeName(entry.getKey());
+                    data.add(new ThongKeModel(displayName, entry.getValue()));
                 }
 
                 updateUI(type, total);
@@ -191,11 +193,10 @@ public class StaticsticsActivity extends AppCompatActivity {
         List<PieEntry> entries = new ArrayList<>();
 
         for (ThongKeModel item : list) {
-            // Sử dụng giá trị tuyệt đối cho biểu đồ
             entries.add(new PieEntry(Math.abs(item.getAmount()), item.getCategory()));
         }
 
-        PieDataSet dataSet = new PieDataSet(entries, "Thống kê theo danh mục");
+        PieDataSet dataSet = new PieDataSet(entries, "Thống kê theo loại giao dịch");
         dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
         dataSet.setValueTextSize(12f);
         dataSet.setValueTextColor(getResources().getColor(android.R.color.black));
@@ -219,5 +220,17 @@ public class StaticsticsActivity extends AppCompatActivity {
         pieChart.clear();
         pieChart.setNoDataText("Không có dữ liệu để hiển thị");
         pieChart.invalidate();
+    }
+
+    // Hàm chuyển đổi type -> Tiếng Việt
+    private String getDisplayTypeName(String type) {
+        switch (type) {
+            case "income":
+                return "Thu nhập";
+            case "expense":
+                return "Chi tiêu";
+            default:
+                return type;
+        }
     }
 }
