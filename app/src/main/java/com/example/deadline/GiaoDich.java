@@ -1,26 +1,29 @@
 package com.example.deadline;
+
 public class GiaoDich {
     private String id;
-    private String name;
-    private int amount; // Số tiền (âm là chi tiêu, dương là thu nhập)
-    private String date; // Định dạng dd/MM/yyyy
+    private String date;
+    private int amount;
+    private String type;
     private String category;
+    private String note;
     private String title;
+    private String name;
 
-    // Constructor, getter và setter
-    public GiaoDich() {
-        // Cần constructor rỗng cho Firebase
-    }
+    public GiaoDich() {}
 
-    public GiaoDich(String name,String title, int amount, String date, String category) {
-        this.name = name;
-        this.amount = amount;
+    public GiaoDich(String id, String date, int amount, String type, String category, String note,String title,String name) {
+        this.id = id;
         this.date = date;
+        this.amount = amount;
+        this.type = type;
         this.category = category;
-        this.title= title;
+        this.note = note;
+        this.title = title;
+        this.name = name;
     }
 
-    // Getter và Setter
+    // Getter & Setter
     public String getId() {
         return id;
     }
@@ -29,38 +32,55 @@ public class GiaoDich {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-    public String getTitle() {
-        return title;
+    public String getDate() {
+        return date;
     }
 
     public int getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
+    public String getType() {
+        return type;
     }
 
     public String getCategory() {
         return category;
     }
 
+    public String getNote() {
+        return note;
+    }
+    public String getTitle() {
+        return title;
+    }
+    public String getName() {
+        return name;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

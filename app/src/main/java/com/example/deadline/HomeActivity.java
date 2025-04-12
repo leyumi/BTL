@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -109,17 +108,15 @@ public class HomeActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setSelectedItemId(R.id.nav_home);
         bottomNav.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
-            if (id == R.id.nav_home) {
-                return true;
-            } else if (id == R.id.nav_calendar) {
+            if (id == R.id.nav_home) return true;
+            else if (id == R.id.nav_calendar) {
                 startActivity(new Intent(HomeActivity.this, CalendarActivity.class));
             } else if (id == R.id.nav_add) {
                 startActivity(new Intent(HomeActivity.this, AddTransactionActivity.class));
@@ -152,8 +149,6 @@ public class HomeActivity extends AppCompatActivity {
                             String gdThangNam = parts[1] + "/" + parts[2];
                             if (gdThangNam.equals(thangNam)) {
                                 giaoDichList.add(gd);
-
-                                // Phân loại thu nhập/chi tiêu
                                 if (gd.getAmount() >= 0) {
                                     tongThuNhap += gd.getAmount();
                                 } else {
@@ -164,7 +159,6 @@ public class HomeActivity extends AppCompatActivity {
                     }
                 }
 
-                // Cập nhật UI
                 updateTongQuan(tongThuNhap, tongChiTieu);
                 adapter.notifyDataSetChanged();
             }
@@ -197,7 +191,7 @@ public class HomeActivity extends AppCompatActivity {
                     if (date != null && date.contains("/")) {
                         String[] parts = date.split("/");
                         if (parts.length == 3) {
-                            monthSet.add(parts[1] + "/" + parts[2]); // MM/yyyy
+                            monthSet.add(parts[1] + "/" + parts[2]);
                         }
                     }
                 }
@@ -231,7 +225,6 @@ public class HomeActivity extends AppCompatActivity {
 
         monthAdapter.notifyDataSetChanged();
 
-        // Tự động load dữ liệu cho tháng đầu tiên
         if (!monthList.isEmpty() && !monthList.get(0).equals("Không có giao dịch")) {
             loadGiaoDichTheoThang(monthList.get(0));
         }
@@ -240,13 +233,17 @@ public class HomeActivity extends AppCompatActivity {
     private void deleteTransaction(int position) {
         if (position >= 0 && position < giaoDichList.size()) {
             GiaoDich gd = giaoDichList.get(position);
+            if (gd.getId() == null) {
+                Toast.makeText(this, "Không thể xoá giao dịch không có ID", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             databaseRef.child("transactions").child(gd.getId()).removeValue()
                     .addOnSuccessListener(aVoid -> {
                         giaoDichList.remove(position);
                         adapter.notifyItemRemoved(position);
                         Toast.makeText(HomeActivity.this, "Đã xoá giao dịch", Toast.LENGTH_SHORT).show();
-                        // Cập nhật lại tổng quan
-                        loadThangGiaoDich();
+                        loadThangGiaoDich(); // reload lại tháng nếu cần
                     })
                     .addOnFailureListener(e -> {
                         Toast.makeText(HomeActivity.this, "Lỗi khi xoá giao dịch", Toast.LENGTH_SHORT).show();
