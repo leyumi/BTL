@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">deadline</string>
+    <string name="chon_loai_gd">Chọn loại giao dịch</string>
+
+    <string-array name="loai_giao_dich">
+        <item>Tất cả</item>
+        <item>Thu nhập</item>
+        <item>Chi tiêu</item>
+    </string-array>
 </resources>

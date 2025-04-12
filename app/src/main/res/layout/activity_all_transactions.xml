@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F4A7C3"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Tất cả giao dịch"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <!-- Phần lọc ngày -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TỪ NGÀY"
+                android:textSize="12sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tvFromDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="01/04/2025"
+                    android:textSize="14sp"
+                    android:layout_marginEnd="8dp"/>
+
+                <ImageButton
+                    android:id="@+id/btnPickFromDate"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_calendar"
+                    android:background="?attr/selectableItemBackgroundBorderless"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ĐẾN NGÀY"
+                android:textSize="12sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tvToDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="30/04/2025"
+                    android:textSize="14sp"
+                    android:layout_marginEnd="8dp"/>
+
+                <ImageButton
+                    android:id="@+id/btnPickToDate"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_calendar"
+                    android:background="?attr/selectableItemBackgroundBorderless"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Spinner loại giao dịch -->
+    <Spinner
+        android:id="@+id/spinnerLoaiGD"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:entries="@array/loai_giao_dich"
+        android:prompt="@string/chon_loai_gd" />
+
+    <!-- Nút áp dụng -->
+    <Button
+        android:id="@+id/btnApplyFilter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Áp dụng"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Danh sách giao dịch -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvAllTransactions"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

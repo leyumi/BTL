@@ -20,7 +20,6 @@ public class GiaoDichAdapter extends RecyclerView.Adapter<GiaoDichAdapter.ViewHo
     private final List<GiaoDich> giaoDichList;
     private final OnItemActionListener listener;
 
-    // Constructor nhận danh sách và listener
     public GiaoDichAdapter(List<GiaoDich> giaoDichList, OnItemActionListener listener) {
         this.giaoDichList = giaoDichList;
         this.listener = listener;
@@ -38,34 +37,44 @@ public class GiaoDichAdapter extends RecyclerView.Adapter<GiaoDichAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         GiaoDich giaoDich = giaoDichList.get(position);
 
-        String title = giaoDich.getTitle() != null ? giaoDich.getTitle() : "Không rõ";
-        String date = giaoDich.getDate() != null ? giaoDich.getDate() : "--/--/----";
+        // Sử dụng title nếu có, nếu không thì dùng name
+        String displayTitle = giaoDich.getTitle() != null && !giaoDich.getTitle().isEmpty()
+                ? giaoDich.getTitle()
+                : giaoDich.getName();
+
+        holder.tvTitle.setText(displayTitle != null ? displayTitle : "Không có tiêu đề");
+        holder.tvDate.setText(giaoDich.getDate() != null ? giaoDich.getDate() : "--/--/----");
+
+        // Định dạng số tiền
         int amount = giaoDich.getAmount();
-
-        holder.tvTitle.setText(title);
-        holder.tvDate.setText(date);
-
         String amountFormatted = NumberFormat.getNumberInstance(Locale.US).format(Math.abs(amount)) + " VND";
         holder.tvAmount.setText((amount < 0 ? "- " : "+ ") + amountFormatted);
         holder.tvAmount.setTextColor(amount < 0 ? Color.RED : Color.parseColor("#43A047"));
 
-        // Menu xử lý
-        holder.imgMenu.setOnClickListener(v -> {
-            PopupMenu popup = new PopupMenu(v.getContext(), holder.imgMenu);
-            popup.getMenuInflater().inflate(R.menu.menu_giaodich, popup.getMenu());
-            popup.setOnMenuItemClickListener(item -> {
-                int id = item.getItemId();
-                if (id == R.id.action_edit) {
-                    listener.onEdit(holder.getAdapterPosition());
-                    return true;
-                } else if (id == R.id.action_delete) {
-                    listener.onDelete(holder.getAdapterPosition());
-                    return true;
-                }
-                return false;
-            });
-            popup.show();
+        // Hiển thị category nếu có
+        if (holder.tvCategory != null) {
+            holder.tvCategory.setText(giaoDich.getCategory() != null ? giaoDich.getCategory() : "");
+        }
+
+        // Xử lý menu
+        holder.imgMenu.setOnClickListener(v -> showPopupMenu(v, holder.getAdapterPosition()));
+    }
+
+    private void showPopupMenu(View view, int position) {
+        PopupMenu popup = new PopupMenu(view.getContext(), view);
+        popup.getMenuInflater().inflate(R.menu.menu_giaodich, popup.getMenu());
+        popup.setOnMenuItemClickListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.action_edit) {
+                listener.onEdit(position);
+                return true;
+            } else if (id == R.id.action_delete) {
+                listener.onDelete(position);
+                return true;
+            }
+            return false;
         });
+        popup.show();
     }
 
     @Override
@@ -74,7 +83,7 @@ public class GiaoDichAdapter extends RecyclerView.Adapter<GiaoDichAdapter.ViewHo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitle, tvDate, tvAmount;
+        TextView tvTitle, tvDate, tvAmount, tvCategory;
         ImageView imgMenu;
 
         public ViewHolder(@NonNull View itemView) {
@@ -83,6 +92,13 @@ public class GiaoDichAdapter extends RecyclerView.Adapter<GiaoDichAdapter.ViewHo
             tvDate = itemView.findViewById(R.id.tvDate);
             tvAmount = itemView.findViewById(R.id.tvAmount);
             imgMenu = itemView.findViewById(R.id.imgMenu);
+
+            // Thêm tvCategory nếu có trong layout
+            try {
+                tvCategory = itemView.findViewById(R.id.tvCategory);
+            } catch (Exception e) {
+                // Nếu không có tvCategory trong layout
+            }
         }
     }
 
