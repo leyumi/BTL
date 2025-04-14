@@ -182,8 +182,8 @@ public class AllTransactionsActivity extends AppCompatActivity {
                         (toDate == null || !gdDate.after(toDate));
 
                 boolean typeMatches = !filterByType ||
-                        (selectedType.equals("Thu nhập") && gd.getAmount() >= 0) ||
-                        (selectedType.equals("Chi tiêu") && gd.getAmount() < 0);
+                        (selectedType.equals("Thu nhập") && "income".equals(gd.getType())) ||
+                        (selectedType.equals("Chi tiêu") && "expense".equals(gd.getType()));
 
                 if (dateInRange && typeMatches) {
                     filteredGiaoDichList.add(gd);

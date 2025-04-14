@@ -4,9 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class LoginActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -14,24 +17,25 @@ public class LoginActivity extends AppCompatActivity {
 
         Button btnLogin = findViewById(R.id.btnLogin);
         Button btnSignup = findViewById(R.id.btnSignup);
+        TextView tvForgot = findViewById(R.id.tvF); // ánh xạ TextView "Forgot Password?"
 
-        // Chuyển sang màn hình chính sau khi đăng nhập
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, Login2Activity.class);
-                startActivity(intent);
-                finish();
-            }
+        // Đăng nhập
+        btnLogin.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, Login2Activity.class);
+            startActivity(intent);
+            finish();
         });
 
-        // Chuyển sang màn hình đăng ký
-        btnSignup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(intent);
-            }
+        // Đăng ký
+        btnSignup.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
+        });
+
+        // Quên mật khẩu
+        tvForgot.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, ForgotActivity.class);
+            startActivity(intent);
         });
     }
 }
