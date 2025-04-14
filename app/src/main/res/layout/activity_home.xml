@@ -23,7 +23,7 @@
                 android:id="@+id/tvWelcome"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hi, Welcome Back"
+                android:text="Xin chào !!!"
                 android:textColor="#000"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -32,7 +32,7 @@
                 android:id="@+id/tvGreeting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Good Morning"
+                android:text="Chúc bạn 1 ngày tốt lành"
                 android:textColor="#000"
                 android:textSize="14sp" />
 

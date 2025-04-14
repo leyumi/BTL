@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Welcome"
+        android:text="Xin chào!"
         android:textColor="@android:color/black"
         android:textSize="22sp"
         android:textStyle="bold"
@@ -51,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="5dp"
-            android:text="Username or Email"
+            android:text="Nhập email"
             android:textColor="@android:color/black"
             android:textSize="16sp" />
 
@@ -71,7 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Password"
+            android:text="Mật khẩu"
             android:textColor="@android:color/black"
             android:textSize="16sp" />
 
@@ -114,7 +114,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:backgroundTint="#00C896"
-            android:text="Log in"
+            android:text="Đăng nhập"
             android:textColor="@android:color/white"
             android:textSize="18sp" />
 
@@ -125,7 +125,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:backgroundTint="#00C896"
-            android:text="Sign Up"
+            android:text="Đăng ký"
             android:textColor="@android:color/white"
             android:textSize="18sp" />
 
@@ -135,7 +135,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="16dp"
-            android:text="Forgot password?"
+            android:text="Quên mật khẩu"
             android:textColor="#2196F3"
             android:textStyle="bold" />
 

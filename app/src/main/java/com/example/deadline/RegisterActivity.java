@@ -67,7 +67,7 @@ public class RegisterActivity extends AppCompatActivity {
         btnSignUp.setOnClickListener(view -> validateAndRegister());
 
         tvLogin.setOnClickListener(v -> {
-            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+            startActivity(new Intent(RegisterActivity.this, Login2Activity.class));
             finish();
         });
     }

@@ -2,9 +2,11 @@ package com.example.deadline;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +23,9 @@ public class Login2Activity extends AppCompatActivity {
 
     EditText etEmail, etPassword;
     Button btnLogin, btnSignup;
+    TextView tvForgotPassword;
+    ImageView icMat;
+    boolean isPasswordVisible = false; // Kiểm soát trạng thái hiển thị mật khẩu
     FirebaseAuth mAuth;
 
     @Override
@@ -29,20 +34,38 @@ public class Login2Activity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login2);
 
+        // Điều chỉnh giao diện để phù hợp với hệ thống
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.linearLayout), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        // Ánh xạ các thành phần giao diện
+        // Ánh xạ giao diện
         etEmail = findViewById(R.id.et_email);
         etPassword = findViewById(R.id.et_pass);
         btnLogin = findViewById(R.id.btn_login);
         btnSignup = findViewById(R.id.btn_signup);
+        tvForgotPassword = findViewById(R.id.tv_forgot_password);
+        icMat = findViewById(R.id.ic_mat); // Icon mắt để hiển thị/ẩn mật khẩu
 
         // Khởi tạo FirebaseAuth
         mAuth = FirebaseAuth.getInstance();
+
+        // Xử lý ẩn/hiện mật khẩu khi nhấn vào icon mắt
+        icMat.setOnClickListener(v -> {
+            if (isPasswordVisible) {
+                // Đặt lại inputType về mật khẩu (ẩn)
+                etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                icMat.setImageResource(R.drawable.mat);
+            } else {
+                // Hiển thị mật khẩu
+                etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                icMat.setImageResource(R.drawable.mat);
+            }
+            etPassword.setSelection(etPassword.length());
+            isPasswordVisible = !isPasswordVisible;
+        });
 
         // Xử lý đăng nhập
         btnLogin.setOnClickListener(view -> {
@@ -72,12 +95,11 @@ public class Login2Activity extends AppCompatActivity {
             Intent intent = new Intent(Login2Activity.this, RegisterActivity.class);
             startActivity(intent);
         });
-        TextView tv_forgot_password;
-        tv_forgot_password = findViewById(R.id.tv_forgot_password);
-        tv_forgot_password.setOnClickListener(v -> {
+
+        // Xử lý quên mật khẩu
+        tvForgotPassword.setOnClickListener(v -> {
             Intent intent = new Intent(Login2Activity.this, ForgotActivity.class);
             startActivity(intent);
         });
-
     }
 }

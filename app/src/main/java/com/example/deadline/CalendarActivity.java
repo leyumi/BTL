@@ -40,30 +40,28 @@ public class CalendarActivity extends AppCompatActivity {
         gridCalendar = findViewById(R.id.gridCalendar);
 
         // Thiết lập thanh điều hướng dưới
-        // Thiết lập thanh điều hướng dưới
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setSelectedItemId(R.id.nav_calendar); // Đánh dấu mục Calendar được chọn
+        bottomNavigationView.setSelectedItemId(R.id.nav_calendar);
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
-
             if (itemId == R.id.nav_calendar) {
-                // Đã ở CalendarActivity, không làm gì cả
                 return true;
             } else if (itemId == R.id.nav_home) {
                 startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                 overridePendingTransition(0, 0);
-                finish(); // Kết thúc Activity hiện tại
+                finish();
                 return true;
             } else if (itemId == R.id.nav_profile) {
                 startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
                 overridePendingTransition(0, 0);
-                finish(); // Kết thúc Activity hiện tại
+                finish();
                 return true;
             }
             return false;
         });
-        // Khởi tạo Calendar và lấy ngày hiện tại
+
+        // Khởi tạo Calendar và ngày hiện tại
         calendar = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         currentDateFormatted = sdf.format(calendar.getTime());
@@ -71,19 +69,16 @@ public class CalendarActivity extends AppCompatActivity {
         tvDate.setText("Ngày " + currentDateFormatted);
         tvDetailDate.setText("Chi tiết ngày: " + currentDateFormatted);
 
-        // Tạo danh sách ngày (bao gồm cả Sun–Sat và ô trống đầu tuần)
+        // Dữ liệu lịch
         dateList = generateCalendarData();
-
-        // Gán adapter
         calendarAdapter = new CalendarAdapter(this, dateList);
         gridCalendar.setAdapter(calendarAdapter);
 
-        // Bắt sự kiện chọn ngày
         gridCalendar.setOnItemClickListener((parent, view, position, id) -> {
             String selectedDay = dateList.get(position);
             if (position < 7 || selectedDay.isEmpty()) return;
 
-            String newDate = String.format(Locale.getDefault(), "%02d/%02d/%04d",
+            String newDate = String.format(Locale.getDefault(), "%d/%d/%d",
                     Integer.parseInt(selectedDay), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.YEAR));
 
             currentDateFormatted = newDate;
@@ -93,20 +88,19 @@ public class CalendarActivity extends AppCompatActivity {
             loadDataForDate(newDate);
         });
 
-        // Firebase
+        // Lấy UID người dùng hiện tại
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         giaoDichRef = FirebaseDatabase.getInstance()
                 .getReference("users")
                 .child(userId)
                 .child("transactions");
 
-        // Tải dữ liệu cho ngày hiện tại
+        // Load dữ liệu cho ngày hiện tại
         loadDataForDate(currentDateFormatted);
     }
 
     private List<String> generateCalendarData() {
         List<String> list = new ArrayList<>();
-
         list.addAll(Arrays.asList("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"));
 
         calendar.set(Calendar.DAY_OF_MONTH, 1);
@@ -127,7 +121,10 @@ public class CalendarActivity extends AppCompatActivity {
     private void loadDataForDate(String date) {
         if (giaoDichRef == null) return;
 
-        giaoDichRef.orderByChild("date").equalTo(date).addListenerForSingleValueEvent(new ValueEventListener() {
+        // Chuyển "01/04/2025" thành "1/4/2025" để khớp Firebase
+        String normalizedDate = date.replaceFirst("^0+", "").replaceFirst("/0+", "/");
+
+        giaoDichRef.orderByChild("date").equalTo(normalizedDate).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 long tongChiTieu = 0;
@@ -137,15 +134,13 @@ public class CalendarActivity extends AppCompatActivity {
                     GiaoDich giaoDich = ds.getValue(GiaoDich.class);
 
                     if (giaoDich != null) {
-                        giaoDich.setId(ds.getKey()); // ✅ Gán ID từ Firebase vào đối tượng
+                        giaoDich.setId(ds.getKey());
 
                         if ("expense".equals(giaoDich.getType())) {
                             tongChiTieu += giaoDich.getAmount();
                         } else if ("income".equals(giaoDich.getType())) {
                             tongThuNhap += giaoDich.getAmount();
                         }
-
-                        // TODO: Nếu bạn muốn hiển thị danh sách giao dịch từng ngày, hãy thêm vào một list ở đây
                     }
                 }
 
@@ -165,5 +160,4 @@ public class CalendarActivity extends AppCompatActivity {
             }
         });
     }
-
 }

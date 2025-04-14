@@ -88,7 +88,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:text="Edit Profile"
+                        android:text="Chỉnh sửa hồ sơ"
                         android:textSize="16sp" />
                 </LinearLayout>
 
@@ -115,7 +115,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:text="Security"
+                        android:text="Bảo mật"
                         android:textSize="16sp" />
                 </LinearLayout>
 
@@ -142,7 +142,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:text="Settings"
+                        android:text="Cài đặt"
                         android:textSize="16sp" />
                 </LinearLayout>
 
@@ -169,7 +169,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:text="Help"
+                        android:text="Trợ giúp"
                         android:textSize="16sp" />
                 </LinearLayout>
 
@@ -195,7 +195,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:text="Logout"
+                        android:text="Đăng xuất"
                         android:textSize="16sp" />
                 </LinearLayout>
             </LinearLayout>
